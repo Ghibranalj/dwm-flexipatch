@@ -3,7 +3,7 @@
 /* appearance */
 #if ROUNDED_CORNERS_PATCH
 static const unsigned int borderpx       = 0;   /* border pixel of windows */
-static const int corner_radius           = 5;
+static const int corner_radius           = 6;
 #else
 static const unsigned int borderpx       = 1;   /* border pixel of windows */
 #endif // ROUNDED_CORNERS_PATCH
@@ -20,8 +20,8 @@ static int nomodbuttons                  = 1;   /* allow client mouse button bin
 #if VANITYGAPS_PATCH
 static const unsigned int gappih         = 8;  /* horiz inner gap between windows */
 static const unsigned int gappiv         = 8;  /* vert inner gap between windows */
-static const unsigned int gappoh         = 2;  /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov         = 2;  /* vert outer gap between windows and screen edge */
+static const unsigned int gappoh         = 3;  /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov         = 3;  /* vert outer gap between windows and screen edge */
 static const int smartgaps_fact          = 1;   /* gap factor when there is only one client; 0 = no gaps, 3 = 3x outer gaps */
 #endif // VANITYGAPS_PATCH
 #if AUTOSTART_PATCH
@@ -854,13 +854,15 @@ static const char *termcmd[]  = { "st", NULL };
 #define STATUSBAR "dwmblocks"
 #else
 /* commands spawned when clicking statusbar, the mouse button pressed is exported as BUTTON */
+/* #define BARCMD(X) "bash -c '" X "'" */
 static const StatusCmd statuscmds[] = {
-	{ "notify-send Volume$BUTTON", 1 },
-	{ "notify-send CPU$BUTTON", 2 },
-	{ "notify-send Battery$BUTTON", 3 },
+	{ "notify-send test", 1 },
+	{ "notify-send amazing", 2 },
+	{ "notify-send battery", 3 },
+	{ "~/.bin/rofi-notification", 4 },
 };
 /* test the above with: xsetroot -name "$(printf '\x01Volume |\x02 CPU |\x03 Battery')" */
-static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
+static const char *statuscmd[] = { "/bin/bash", "-c", NULL, NULL };
 #endif // BAR_DWMBLOCKS_PATCH
 #endif // BAR_STATUSCMD_PATCH
 
@@ -1192,534 +1194,562 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_KP_4,       togglehorizontalexpand, {.i = -1} },  /* XK_KP_Left,  */
 	{ MODKEY|ControlMask,           XK_KP_8,       toggleverticalexpand,   {.i = +1} },  /* XK_KP_Up,    */
 	{ MODKEY|ControlMask,           XK_KP_1,       toggleverticalexpand,   {.i =  0} },  /* XK_KP_End,   */
-	{ MODKEY|ControlMask,           XK_KP_2,       toggleverticalexpand,   {.i = -1} },  /* XK_KP_Down,  */
-	{ MODKEY|ControlMask,           XK_KP_9,       togglemaximize,         {.i = -1} },  /* XK_KP_Prior, */
-	{ MODKEY|ControlMask,           XK_KP_7,       togglemaximize,         {.i = +1} },  /* XK_KP_Home,  */
-	{ MODKEY|ControlMask,           XK_KP_5,       togglemaximize,         {.i =  0} },  /* XK_KP_Begin, */
-	#endif // EXRESIZE_PATCH
-	#if FLOATPOS_PATCH
-	/* Note that due to key limitations the below example kybindings are defined with a Mod3Mask,
-	 * which is not always readily available. Refer to the patch wiki for more details. */
-	/* Client position is limited to monitor window area */
-	{ Mod3Mask,                     XK_u,            floatpos,               {.v = "-26x -26y" } }, // ↖
-	{ Mod3Mask,                     XK_i,            floatpos,               {.v = "  0x -26y" } }, // ↑
-	{ Mod3Mask,                     XK_o,            floatpos,               {.v = " 26x -26y" } }, // ↗
-	{ Mod3Mask,                     XK_j,            floatpos,               {.v = "-26x   0y" } }, // ←
-	{ Mod3Mask,                     XK_l,            floatpos,               {.v = " 26x   0y" } }, // →
-	{ Mod3Mask,                     XK_m,            floatpos,               {.v = "-26x  26y" } }, // ↙
-	{ Mod3Mask,                     XK_comma,        floatpos,               {.v = "  0x  26y" } }, // ↓
-	{ Mod3Mask,                     XK_period,       floatpos,               {.v = " 26x  26y" } }, // ↘
-	/* Absolute positioning (allows moving windows between monitors) */
-	{ Mod3Mask|ControlMask,         XK_u,            floatpos,               {.v = "-26a -26a" } }, // ↖
-	{ Mod3Mask|ControlMask,         XK_i,            floatpos,               {.v = "  0a -26a" } }, // ↑
-	{ Mod3Mask|ControlMask,         XK_o,            floatpos,               {.v = " 26a -26a" } }, // ↗
-	{ Mod3Mask|ControlMask,         XK_j,            floatpos,               {.v = "-26a   0a" } }, // ←
-	{ Mod3Mask|ControlMask,         XK_l,            floatpos,               {.v = " 26a   0a" } }, // →
-	{ Mod3Mask|ControlMask,         XK_m,            floatpos,               {.v = "-26a  26a" } }, // ↙
-	{ Mod3Mask|ControlMask,         XK_comma,        floatpos,               {.v = "  0a  26a" } }, // ↓
-	{ Mod3Mask|ControlMask,         XK_period,       floatpos,               {.v = " 26a  26a" } }, // ↘
-	/* Resize client, client center position is fixed which means that client expands in all directions */
-	{ Mod3Mask|ShiftMask,           XK_u,            floatpos,               {.v = "-26w -26h" } }, // ↖
-	{ Mod3Mask|ShiftMask,           XK_i,            floatpos,               {.v = "  0w -26h" } }, // ↑
-	{ Mod3Mask|ShiftMask,           XK_o,            floatpos,               {.v = " 26w -26h" } }, // ↗
-	{ Mod3Mask|ShiftMask,           XK_j,            floatpos,               {.v = "-26w   0h" } }, // ←
-	{ Mod3Mask|ShiftMask,           XK_k,            floatpos,               {.v = "800W 800H" } }, // ·
-	{ Mod3Mask|ShiftMask,           XK_l,            floatpos,               {.v = " 26w   0h" } }, // →
-	{ Mod3Mask|ShiftMask,           XK_m,            floatpos,               {.v = "-26w  26h" } }, // ↙
-	{ Mod3Mask|ShiftMask,           XK_comma,        floatpos,               {.v = "  0w  26h" } }, // ↓
-	{ Mod3Mask|ShiftMask,           XK_period,       floatpos,               {.v = " 26w  26h" } }, // ↘
-	/* Client is positioned in a floating grid, movement is relative to client's current position */
-	{ Mod3Mask|Mod1Mask,            XK_u,            floatpos,               {.v = "-1p -1p" } }, // ↖
-	{ Mod3Mask|Mod1Mask,            XK_i,            floatpos,               {.v = " 0p -1p" } }, // ↑
-	{ Mod3Mask|Mod1Mask,            XK_o,            floatpos,               {.v = " 1p -1p" } }, // ↗
-	{ Mod3Mask|Mod1Mask,            XK_j,            floatpos,               {.v = "-1p  0p" } }, // ←
-	{ Mod3Mask|Mod1Mask,            XK_k,            floatpos,               {.v = " 0p  0p" } }, // ·
-	{ Mod3Mask|Mod1Mask,            XK_l,            floatpos,               {.v = " 1p  0p" } }, // →
-	{ Mod3Mask|Mod1Mask,            XK_m,            floatpos,               {.v = "-1p  1p" } }, // ↙
-	{ Mod3Mask|Mod1Mask,            XK_comma,        floatpos,               {.v = " 0p  1p" } }, // ↓
-	{ Mod3Mask|Mod1Mask,            XK_period,       floatpos,               {.v = " 1p  1p" } }, // ↘
-	#endif // FLOATPOS_PATCH
-	#if SETBORDERPX_PATCH
-	{ MODKEY|ControlMask,           XK_minus,      setborderpx,            {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_plus,       setborderpx,            {.i = +1 } },
-	{ MODKEY|ControlMask,           XK_numbersign, setborderpx,            {.i = 0 } },
-	#endif // SETBORDERPX_PATCH
-	#if CYCLELAYOUTS_PATCH
-	{ MODKEY|ControlMask,           XK_comma,      cyclelayout,            {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_period,     cyclelayout,            {.i = +1 } },
-	#endif // CYCLELAYOUTS_PATCH
-	#if MPDCONTROL_PATCH
-	{ MODKEY,                       XK_F1,         mpdchange,              {.i = -1} },
-	{ MODKEY,                       XK_F2,         mpdchange,              {.i = +1} },
-	{ MODKEY,                       XK_Escape,     mpdcontrol,             {0} },
-	#endif // MPDCONTROL_PATCH
-	TAGKEYS(                        XK_1,                                  0)
-	TAGKEYS(                        XK_2,                                  1)
-	TAGKEYS(                        XK_3,                                  2)
-	TAGKEYS(                        XK_4,                                  3)
-	TAGKEYS(                        XK_5,                                  4)
-	TAGKEYS(                        XK_6,                                  5)
-	TAGKEYS(                        XK_7,                                  6)
-	TAGKEYS(                        XK_8,                                  7)
-	TAGKEYS(                        XK_9,                                  8)
-};
+	{MODKEY | ControlMask,
+     XK_KP_2,
+     toggleverticalexpand,
+     {.i = -1}}, /* XK_KP_Down,  */
+    {MODKEY | ControlMask,
+     XK_KP_9,
+     togglemaximize,
+     {.i = -1}}, /* XK_KP_Prior, */
+    {MODKEY | ControlMask,
+     XK_KP_7,
+     togglemaximize,
+     {.i = +1}}, /* XK_KP_Home,  */
+    {MODKEY | ControlMask,
+     XK_KP_5,
+     togglemaximize,
+     {.i = 0}}, /* XK_KP_Begin, */
+#endif          // EXRESIZE_PATCH
+#if FLOATPOS_PATCH
+    /* Note that due to key limitations the below example kybindings are defined
+     * with a Mod3Mask, which is not always readily available. Refer to the
+     * patch wiki for more details. */
+    /* Client position is limited to monitor window area */
+    {Mod3Mask, XK_u, floatpos, {.v = "-26x -26y"}},      // ↖
+    {Mod3Mask, XK_i, floatpos, {.v = "  0x -26y"}},      // ↑
+    {Mod3Mask, XK_o, floatpos, {.v = " 26x -26y"}},      // ↗
+    {Mod3Mask, XK_j, floatpos, {.v = "-26x   0y"}},      // ←
+    {Mod3Mask, XK_l, floatpos, {.v = " 26x   0y"}},      // →
+    {Mod3Mask, XK_m, floatpos, {.v = "-26x  26y"}},      // ↙
+    {Mod3Mask, XK_comma, floatpos, {.v = "  0x  26y"}},  // ↓
+    {Mod3Mask, XK_period, floatpos, {.v = " 26x  26y"}}, // ↘
+    /* Absolute positioning (allows moving windows between monitors) */
+    {Mod3Mask | ControlMask, XK_u, floatpos, {.v = "-26a -26a"}},      // ↖
+    {Mod3Mask | ControlMask, XK_i, floatpos, {.v = "  0a -26a"}},      // ↑
+    {Mod3Mask | ControlMask, XK_o, floatpos, {.v = " 26a -26a"}},      // ↗
+    {Mod3Mask | ControlMask, XK_j, floatpos, {.v = "-26a   0a"}},      // ←
+    {Mod3Mask | ControlMask, XK_l, floatpos, {.v = " 26a   0a"}},      // →
+    {Mod3Mask | ControlMask, XK_m, floatpos, {.v = "-26a  26a"}},      // ↙
+    {Mod3Mask | ControlMask, XK_comma, floatpos, {.v = "  0a  26a"}},  // ↓
+    {Mod3Mask | ControlMask, XK_period, floatpos, {.v = " 26a  26a"}}, // ↘
+    /* Resize client, client center position is fixed which means that client
+       expands in all directions */
+    {Mod3Mask | ShiftMask, XK_u, floatpos, {.v = "-26w -26h"}},      // ↖
+    {Mod3Mask | ShiftMask, XK_i, floatpos, {.v = "  0w -26h"}},      // ↑
+    {Mod3Mask | ShiftMask, XK_o, floatpos, {.v = " 26w -26h"}},      // ↗
+    {Mod3Mask | ShiftMask, XK_j, floatpos, {.v = "-26w   0h"}},      // ←
+    {Mod3Mask | ShiftMask, XK_k, floatpos, {.v = "800W 800H"}},      // ·
+    {Mod3Mask | ShiftMask, XK_l, floatpos, {.v = " 26w   0h"}},      // →
+    {Mod3Mask | ShiftMask, XK_m, floatpos, {.v = "-26w  26h"}},      // ↙
+    {Mod3Mask | ShiftMask, XK_comma, floatpos, {.v = "  0w  26h"}},  // ↓
+    {Mod3Mask | ShiftMask, XK_period, floatpos, {.v = " 26w  26h"}}, // ↘
+    /* Client is positioned in a floating grid, movement is relative to client's
+       current position */
+    {Mod3Mask | Mod1Mask, XK_u, floatpos, {.v = "-1p -1p"}},      // ↖
+    {Mod3Mask | Mod1Mask, XK_i, floatpos, {.v = " 0p -1p"}},      // ↑
+    {Mod3Mask | Mod1Mask, XK_o, floatpos, {.v = " 1p -1p"}},      // ↗
+    {Mod3Mask | Mod1Mask, XK_j, floatpos, {.v = "-1p  0p"}},      // ←
+    {Mod3Mask | Mod1Mask, XK_k, floatpos, {.v = " 0p  0p"}},      // ·
+    {Mod3Mask | Mod1Mask, XK_l, floatpos, {.v = " 1p  0p"}},      // →
+    {Mod3Mask | Mod1Mask, XK_m, floatpos, {.v = "-1p  1p"}},      // ↙
+    {Mod3Mask | Mod1Mask, XK_comma, floatpos, {.v = " 0p  1p"}},  // ↓
+    {Mod3Mask | Mod1Mask, XK_period, floatpos, {.v = " 1p  1p"}}, // ↘
+#endif // FLOATPOS_PATCH
+#if SETBORDERPX_PATCH
+    {MODKEY | ControlMask, XK_minus, setborderpx, {.i = -1}},
+    {MODKEY | ControlMask, XK_plus, setborderpx, {.i = +1}},
+    {MODKEY | ControlMask, XK_numbersign, setborderpx, {.i = 0}},
+#endif // SETBORDERPX_PATCH
+#if CYCLELAYOUTS_PATCH
+    {MODKEY | ControlMask, XK_comma, cyclelayout, {.i = -1}},
+    {MODKEY | ControlMask, XK_period, cyclelayout, {.i = +1}},
+#endif // CYCLELAYOUTS_PATCH
+#if MPDCONTROL_PATCH
+    {MODKEY, XK_F1, mpdchange, {.i = -1}},
+    {MODKEY, XK_F2, mpdchange, {.i = +1}},
+    {MODKEY, XK_Escape, mpdcontrol, {0}},
+#endif // MPDCONTROL_PATCH
+    TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3)
+        TAGKEYS(XK_5, 4) TAGKEYS(XK_6, 5) TAGKEYS(XK_7, 6) TAGKEYS(XK_8, 7)
+            TAGKEYS(XK_9, 8)};
 
 #if KEYMODES_PATCH
 static Key cmdkeys[] = {
-	/* modifier                    keys                     function         argument */
-	{ 0,                           XK_Escape,               clearcmd,        {0} },
-	{ ControlMask,                 XK_c,                    clearcmd,        {0} },
-	{ 0,                           XK_i,                    setkeymode,      {.ui = INSERTMODE} },
+    /* modifier                    keys                     function argument */
+    {0, XK_Escape, clearcmd, {0}},
+    {ControlMask, XK_c, clearcmd, {0}},
+    {0, XK_i, setkeymode, {.ui = INSERTMODE}},
 };
 
 static Command commands[] = {
-	/* modifier (4 keys)                          keysyms (4 keys)                                function         argument */
-	{ {ControlMask, ShiftMask,  0,         0},    {XK_w,      XK_h,     0,         0},            setlayout,       {.v = &layouts[0]} },
-	{ {ControlMask, 0,          0,         0},    {XK_w,      XK_o,     0,         0},            setlayout,       {.v = &layouts[2]} },
-	{ {ControlMask, ShiftMask,  0,         0},    {XK_w,      XK_o,     0,         0},            onlyclient,      {0} },
-	{ {ControlMask, 0,          0,         0},    {XK_w,      XK_v,     0,         0},            setlayout,       {.v = &layouts[0]} },
-	{ {ControlMask, 0,          0,         0},    {XK_w,      XK_less,  0,         0},            setmfact,        {.f = -0.05} },
-	{ {ControlMask, ShiftMask,  0,         0},    {XK_w,      XK_less,  0,         0},            setmfact,        {.f = +0.05} },
-	{ {ControlMask, ShiftMask,  0,         0},    {XK_w,      XK_0,     0,         0},            setmfact,        {.f = +1.50} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_e,     0,         0},            spawn,           {.v = dmenucmd} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_o,     0,         0},            spawn,           {.v = dmenucmd} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_q,     XK_Return, 0},            quit,            {0} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_b,     XK_d,      XK_Return},    killclient,      {0} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_b,     XK_n,      XK_Return},    focusstack,      {.i = +1} },
-	{ {ShiftMask,   0,          ShiftMask, 0},    {XK_period, XK_b,     XK_n,      XK_Return},    focusstack,      {.i = -1} },
+    /* modifier (4 keys)                          keysyms (4 keys) function
+       argument */
+    {{ControlMask, ShiftMask, 0, 0},
+     {XK_w, XK_h, 0, 0},
+     setlayout,
+     {.v = &layouts[0]}},
+    {{ControlMask, 0, 0, 0}, {XK_w, XK_o, 0, 0}, setlayout, {.v = &layouts[2]}},
+    {{ControlMask, ShiftMask, 0, 0}, {XK_w, XK_o, 0, 0}, onlyclient, {0}},
+    {{ControlMask, 0, 0, 0}, {XK_w, XK_v, 0, 0}, setlayout, {.v = &layouts[0]}},
+    {{ControlMask, 0, 0, 0}, {XK_w, XK_less, 0, 0}, setmfact, {.f = -0.05}},
+    {{ControlMask, ShiftMask, 0, 0},
+     {XK_w, XK_less, 0, 0},
+     setmfact,
+     {.f = +0.05}},
+    {{ControlMask, ShiftMask, 0, 0},
+     {XK_w, XK_0, 0, 0},
+     setmfact,
+     {.f = +1.50}},
+    {{ShiftMask, 0, 0, 0}, {XK_period, XK_e, 0, 0}, spawn, {.v = dmenucmd}},
+    {{ShiftMask, 0, 0, 0}, {XK_period, XK_o, 0, 0}, spawn, {.v = dmenucmd}},
+    {{ShiftMask, 0, 0, 0}, {XK_period, XK_q, XK_Return, 0}, quit, {0}},
+    {{ShiftMask, 0, 0, 0}, {XK_period, XK_b, XK_d, XK_Return}, killclient, {0}},
+    {{ShiftMask, 0, 0, 0},
+     {XK_period, XK_b, XK_n, XK_Return},
+     focusstack,
+     {.i = +1}},
+    {{ShiftMask, 0, ShiftMask, 0},
+     {XK_period, XK_b, XK_n, XK_Return},
+     focusstack,
+     {.i = -1}},
 };
 #endif // KEYMODES_PATCH
 
 /* button definitions */
 #if STATUSBUTTON_PATCH
-/* click can be ClkButton, ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
+/* click can be ClkButton, ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+ * ClkClientWin, or ClkRootWin */
 #else
-/* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
+/* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+ * ClkClientWin, or ClkRootWin */
 #endif //
 static Button buttons[] = {
-	/* click                event mask           button          function        argument */
-	#if BAR_STATUSBUTTON_PATCH
-	{ ClkButton,            0,                   Button1,        spawn,          {.v = dmenucmd } },
-	#endif // BAR_STATUSBUTTON_PATCH
-	{ ClkLtSymbol,          0,                   Button1,        setlayout,      {0} },
-	#if BAR_LAYOUTMENU_PATCH
-	{ ClkLtSymbol,          0,                   Button3,        layoutmenu,     {0} },
-	#else
-	{ ClkLtSymbol,          0,                   Button3,        setlayout,      {.v = &layouts[2]} },
-	#endif // BAR_LAYOUTMENU_PATCH
-	#if BAR_WINTITLEACTIONS_PATCH
-	{ ClkWinTitle,          0,                   Button1,        togglewin,      {0} },
-	{ ClkWinTitle,          0,                   Button3,        showhideclient, {0} },
-	#endif // BAR_WINTITLEACTIONS_PATCH
-	{ ClkWinTitle,          0,                   Button2,        zoom,           {0} },
-	#if BAR_STATUSCMD_PATCH && BAR_DWMBLOCKS_PATCH
-	{ ClkStatusText,        0,                   Button1,        sigstatusbar,   {.i = 1 } },
-	{ ClkStatusText,        0,                   Button2,        sigstatusbar,   {.i = 2 } },
-	{ ClkStatusText,        0,                   Button3,        sigstatusbar,   {.i = 3 } },
-	#elif BAR_STATUSCMD_PATCH
-	{ ClkStatusText,        0,                   Button1,        spawn,          {.v = statuscmd } },
-	{ ClkStatusText,        0,                   Button2,        spawn,          {.v = statuscmd } },
-	{ ClkStatusText,        0,                   Button3,        spawn,          {.v = statuscmd } },
-	#else
-	{ ClkStatusText,        0,                   Button2,        spawn,          {.v = termcmd } },
-	#endif // BAR_STATUSCMD_PATCH
-	#if PLACEMOUSE_PATCH
-	/* placemouse options, choose which feels more natural:
-	 *    0 - tiled position is relative to mouse cursor
-	 *    1 - tiled postiion is relative to window center
-	 *    2 - mouse pointer warps to window center
-	 *
-	 * The moveorplace uses movemouse or placemouse depending on the floating state
-	 * of the selected client. Set up individual keybindings for the two if you want
-	 * to control these separately (i.e. to retain the feature to move a tiled window
-	 * into a floating position).
-	 */
-	{ ClkClientWin,         MODKEY,              Button1,        moveorplace,    {.i = 1} },
-	#else
-	{ ClkClientWin,         MODKEY,              Button1,        movemouse,      {0} },
-	#endif // PLACEMOUSE_PATCH
-	{ ClkClientWin,         MODKEY,              Button2,        togglefloating, {0} },
-	{ ClkClientWin,         MODKEY,              Button3,        resizemouse,    {0} },
-	#if TAPRESIZE_PATCH
-	{ ClkClientWin,         MODKEY,              Button4,        resizemousescroll, {.v = &scrollargs[0]} },
-	{ ClkClientWin,         MODKEY,              Button5,        resizemousescroll, {.v = &scrollargs[1]} },
-	{ ClkClientWin,         MODKEY,              Button6,        resizemousescroll, {.v = &scrollargs[2]} },
-	{ ClkClientWin,         MODKEY,              Button7,        resizemousescroll, {.v = &scrollargs[3]} },
-	#endif // TAPRESIZE_PATCH
-	#if DRAGCFACT_PATCH && CFACTS_PATCH
-	{ ClkClientWin,         MODKEY|ShiftMask,    Button3,        dragcfact,      {0} },
-	#endif // DRAGCFACT_PATCH
-	#if DRAGMFACT_PATCH
-	{ ClkClientWin,         MODKEY|ShiftMask,    Button1,        dragmfact,      {0} },
-	#endif // DRAGMFACT_PATCH
-	{ ClkTagBar,            0,                   Button1,        view,           {0} },
-	{ ClkTagBar,            0,                   Button3,        toggleview,     {0} },
-	{ ClkTagBar,            MODKEY,              Button1,        tag,            {0} },
-	{ ClkTagBar,            MODKEY,              Button3,        toggletag,      {0} },
-	#if TAB_PATCH
-	{ ClkTabBar,            0,                   Button1,        focuswin,       {0} },
-	#endif // TAB_PATCH
+/* click                event mask           button          function argument
+ */
+#if BAR_STATUSBUTTON_PATCH
+    {ClkButton, 0, Button1, spawn, {.v = dmenucmd}},
+#endif // BAR_STATUSBUTTON_PATCH
+    {ClkLtSymbol, 0, Button1, setlayout, {0}},
+#if BAR_LAYOUTMENU_PATCH
+    {ClkLtSymbol, 0, Button3, layoutmenu, {0}},
+#else
+    {ClkLtSymbol, 0, Button3, setlayout, {.v = &layouts[2]}},
+#endif // BAR_LAYOUTMENU_PATCH
+#if BAR_WINTITLEACTIONS_PATCH
+    {ClkWinTitle, 0, Button1, togglewin, {0}},
+    {ClkWinTitle, 0, Button3, showhideclient, {0}},
+#endif // BAR_WINTITLEACTIONS_PATCH
+    {ClkWinTitle, 0, Button2, zoom, {0}},
+#if BAR_STATUSCMD_PATCH && BAR_DWMBLOCKS_PATCH
+    {ClkStatusText, 0, Button1, sigstatusbar, {.i = 1}},
+    {ClkStatusText, 0, Button2, sigstatusbar, {.i = 2}},
+    {ClkStatusText, 0, Button3, sigstatusbar, {.i = 3}},
+#elif BAR_STATUSCMD_PATCH
+    {ClkStatusText, 0, Button1, spawn, {.v = statuscmd}},
+    {ClkStatusText, 0, Button2, spawn, {.v = statuscmd}},
+    {ClkStatusText, 0, Button3, spawn, {.v = statuscmd}},
+#else
+    {ClkStatusText, 0, Button2, spawn, {.v = termcmd}},
+#endif // BAR_STATUSCMD_PATCH
+#if PLACEMOUSE_PATCH
+    /* placemouse options, choose which feels more natural:
+     *    0 - tiled position is relative to mouse cursor
+     *    1 - tiled postiion is relative to window center
+     *    2 - mouse pointer warps to window center
+     *
+     * The moveorplace uses movemouse or placemouse depending on the floating
+     * state of the selected client. Set up individual keybindings for the two
+     * if you want to control these separately (i.e. to retain the feature to
+     * move a tiled window into a floating position).
+     */
+    {ClkClientWin, MODKEY, Button1, moveorplace, {.i = 1}},
+#else
+    {ClkClientWin, MODKEY, Button1, movemouse, {0}},
+#endif // PLACEMOUSE_PATCH
+    {ClkClientWin, MODKEY, Button2, togglefloating, {0}},
+    {ClkClientWin, MODKEY, Button3, resizemouse, {0}},
+#if TAPRESIZE_PATCH
+    {ClkClientWin, MODKEY, Button4, resizemousescroll, {.v = &scrollargs[0]}},
+    {ClkClientWin, MODKEY, Button5, resizemousescroll, {.v = &scrollargs[1]}},
+    {ClkClientWin, MODKEY, Button6, resizemousescroll, {.v = &scrollargs[2]}},
+    {ClkClientWin, MODKEY, Button7, resizemousescroll, {.v = &scrollargs[3]}},
+#endif // TAPRESIZE_PATCH
+#if DRAGCFACT_PATCH && CFACTS_PATCH
+    {ClkClientWin, MODKEY | ShiftMask, Button3, dragcfact, {0}},
+#endif // DRAGCFACT_PATCH
+#if DRAGMFACT_PATCH
+    {ClkClientWin, MODKEY | ShiftMask, Button1, dragmfact, {0}},
+#endif // DRAGMFACT_PATCH
+    {ClkTagBar, 0, Button1, view, {0}},
+    {ClkTagBar, 0, Button3, toggleview, {0}},
+    {ClkTagBar, MODKEY, Button1, tag, {0}},
+    {ClkTagBar, MODKEY, Button3, toggletag, {0}},
+#if TAB_PATCH
+    {ClkTabBar, 0, Button1, focuswin, {0}},
+#endif // TAB_PATCH
 };
 
 #if DWMC_PATCH
 /* signal definitions */
 /* signum must be greater than 0 */
-/* trigger signals using `xsetroot -name "fsignal:<signame> [<type> <value>]"` */
+/* trigger signals using `xsetroot -name "fsignal:<signame> [<type> <value>]"`
+ */
 static Signal signals[] = {
-	/* signum                    function */
-	{ "focusstack",              focusstack },
-	{ "setmfact",                setmfact },
-	{ "togglebar",               togglebar },
-	{ "incnmaster",              incnmaster },
-	{ "togglefloating",          togglefloating },
-	{ "focusmon",                focusmon },
-	#if STACKER_PATCH
-	{ "pushstack",               pushstack },
-	#endif // STACKER_PATCH
-	#if FLOATPOS_PATCH
-	{ "floatpos",                floatpos },
-	#endif // FLOATPOS_PATCH
-	#if FOCUSURGENT_PATCH
-	{ "focusurgent",             focusurgent },
-	#endif // FOCUSURGENT_PATCH
-	#if FOCUSADJACENTTAG_PATCH
-	{ "viewtoleft",              viewtoleft },
-	{ "viewtoright",             viewtoright },
-	{ "tagtoleft",               tagtoleft },
-	{ "tagtoright",              tagtoright},
-	{ "tagandviewtoleft",        tagandviewtoleft },
-	{ "tagandviewtoright",       tagandviewtoright },
-	#endif // FOCUSADJACENTTAG_PATCH
-	#if SWAPFOCUS_PATCH && PERTAG_PATCH
-	{ "swapfocus",               swapfocus },
-	#endif // SWAPFOCUS_PATCH
-	#if SWITCHCOL_PATCH
-	{ "switchcol",               switchcol },
-	#endif // SWITCHCOL_PATCH
-	#if ROTATESTACK_PATCH
-	{ "rotatestack",             rotatestack },
-	#endif // ROTATESTACK_PATCH
-	#if INPLACEROTATE_PATCH
-	{ "inplacerotate",           inplacerotate },
-	#endif // INPLACEROTATE_PATCH
-	#if PUSH_PATCH || PUSH_NO_MASTER_PATCH
-	{ "pushdown",                pushdown },
-	{ "pushup",                  pushup },
-	#endif // PUSH_PATCH / PUSH_NO_MASTER_PATCH
-	#if FLEXTILE_DELUXE_LAYOUT
-	{ "incnstack",               incnstack },
-	{ "rotatelayoutaxis",        rotatelayoutaxis },
-	{ "setlayoutaxisex",         setlayoutaxisex },
-	{ "mirrorlayout",            mirrorlayout },
-	#endif // FLEXTILE_DELUXE_LAYOUT
-	#if CFACTS_PATCH
-	{ "setcfact",                setcfact },
-	#endif // CFACTS_PATCH
-	#if MOVEPLACE_PATCH
-	{ "moveplace",               moveplace },
-	#endif // MOVEPLACE_PATCH
-	#if EXRESIZE_PATCH
-	{ "explace",                 explace },
-	{ "togglehorizontalexpand",  togglehorizontalexpand },
-	{ "toggleverticalexpand",    toggleverticalexpand },
-	{ "togglemaximize",          togglemaximize },
-	#endif // EXRESIZE_PATCH
-	#if KEYMODES_PATCH
-	{ "setkeymode",              setkeymode },
-	#endif // KEYMODES_PATCH
-	#if TRANSFER_PATCH
-	{ "transfer",                transfer },
-	#endif // TRANSFER_PATCH
-	#if TRANSFER_ALL_PATCH
-	{ "transferall",             transferall },
-	#endif // TRANSFER_ALL_PATCH
-	{ "tagmon",                  tagmon },
-	{ "zoom",                    zoom },
-	#if VANITYGAPS_PATCH
-	{ "incrgaps",                incrgaps },
-	{ "incrigaps",               incrigaps },
-	{ "incrogaps",               incrogaps },
-	{ "incrihgaps",              incrihgaps },
-	{ "incrivgaps",              incrivgaps },
-	{ "incrohgaps",              incrohgaps },
-	{ "incrovgaps",              incrovgaps },
-	{ "togglegaps",              togglegaps },
-	{ "defaultgaps",             defaultgaps },
-	{ "setgaps",                 setgapsex },
-	#endif // VANITYGAPS_PATCH
-	{ "view",                    view },
-	{ "viewall",                 viewallex },
-	{ "viewex",                  viewex },
-	{ "toggleview",              toggleview },
-	#if SHIFTBOTH_PATCH
-	{ "shiftboth",               shiftboth },
-	#endif // SHIFTBOTH_PATCH
-	#if SHIFTTAG_PATCH
-	{ "shifttag",                shifttag },
-	#endif // SHIFTTAG_PATCH
-	#if SHIFTTAGCLIENTS_PATCH
-	{ "shifttagclients",         shifttagclients },
-	#endif // SHIFTTAGCLIENTS_PATCH
-	#if SHIFTVIEW_PATCH
-	{ "shiftview",               shiftview },
-	#endif // SHIFTVIEW_PATCH
-	#if SHIFTVIEW_CLIENTS_PATCH
-	{ "shiftviewclients",        shiftviewclients },
-	#endif // SHIFTVIEW_CLIENTS_PATCH
-	#if SHIFTSWAPTAGS_PATCH && SWAPTAGS_PATCH
-	{ "shiftswaptags",           shiftswaptags },
-	#endif // SHIFTSWAPTAGS_PATCH
-	#if SELFRESTART_PATCH
-	{ "self_restart",            self_restart },
-	#endif // SELFRESTART_PATCH
-	#if BAR_TAGGRID_PATCH
-	{ "switchtag",               switchtag },
-	#endif // BAR_TAGGRID_PATCH
-	#if STICKY_PATCH
-	{ "togglesticky",            togglesticky },
-	#endif // STICKY_PATCH
-	#if SETBORDERPX_PATCH
-	{ "setborderpx",             setborderpx },
-	#endif // SETBORDERPX_PATCH
-	#if CYCLELAYOUTS_PATCH
-	{ "cyclelayout",             cyclelayout },
-	#endif // CYCLELAYOUTS_PATCH
-	#if MPDCONTROL_PATCH
-	{ "mpdchange",               mpdchange },
-	{ "mpdcontrol",              mpdcontrol },
-	#endif // MPDCONTROL_PATCH
-	{ "toggleviewex",            toggleviewex },
-	{ "tag",                     tag },
-	{ "tagall",                  tagallex },
-	{ "tagex",                   tagex },
-	{ "toggletag",               toggletag },
-	{ "toggletagex",             toggletagex },
-	#if TAGALLMON_PATCH
-	{ "tagallmon",               tagallmon },
-	#endif // TAGALLMON_PATCH
-	#if TAGSWAPMON_PATCH
-	{ "tagswapmon",              tagswapmon},
-	#endif // TAGSWAPMON_PATCH
-	#if BAR_ALTERNATIVE_TAGS_PATCH
-	{ "togglealttag",            togglealttag },
-	#endif // BAR_ALTERNATIVE_TAGS_PATCH
-	#if TOGGLEFULLSCREEN_PATCH
-	{ "togglefullscreen",        togglefullscreen },
-	#endif // TOGGLEFULLSCREEN_PATCH
-	#if !FAKEFULLSCREEN_PATCH && FAKEFULLSCREEN_CLIENT_PATCH
-	{ "togglefakefullscreen",    togglefakefullscreen },
-	#endif // FAKEFULLSCREEN_CLIENT_PATCH
-	#if FULLSCREEN_PATCH
-	{ "fullscreen",              fullscreen },
-	#endif // FULLSCREEN_PATCH
-	#if MAXIMIZE_PATCH
-	{ "togglehorizontalmax",     togglehorizontalmax },
-	{ "toggleverticalmax",       toggleverticalmax },
-	{ "togglemax",               togglemax },
-	#endif // MAXIMIZE_PATCH
-	#if SCRATCHPADS_PATCH && !RENAMED_SCRATCHPADS_PATCH
-	{ "togglescratch",           togglescratch },
-	#endif // SCRATCHPADS_PATCH
-	#if UNFLOATVISIBLE_PATCH
-	{ "unfloatvisible",          unfloatvisible },
-	#endif // UNFLOATVISIBLE_PATCH
-	{ "killclient",              killclient },
-	#if WINVIEW_PATCH
-	{ "winview",                 winview },
-	#endif // WINVIEW_PATCH
-	#if XRDB_PATCH && !BAR_VTCOLORS_PATCH
-	{ "xrdb",                    xrdb },
-	#endif // XRDB_PATCH
-	#if TAGOTHERMONITOR_PATCH
-	{ "tagnextmonex",            tagnextmonex },
-	{ "tagprevmonex",            tagprevmonex },
-	#endif // TAGOTHERMONITOR_PATCH
-	{ "quit",                    quit },
-	{ "setlayout",               setlayout },
-	{ "setlayoutex",             setlayoutex },
+    /* signum                    function */
+    {"focusstack", focusstack},
+    {"setmfact", setmfact},
+    {"togglebar", togglebar},
+    {"incnmaster", incnmaster},
+    {"togglefloating", togglefloating},
+    {"focusmon", focusmon},
+#if STACKER_PATCH
+    {"pushstack", pushstack},
+#endif // STACKER_PATCH
+#if FLOATPOS_PATCH
+    {"floatpos", floatpos},
+#endif // FLOATPOS_PATCH
+#if FOCUSURGENT_PATCH
+    {"focusurgent", focusurgent},
+#endif // FOCUSURGENT_PATCH
+#if FOCUSADJACENTTAG_PATCH
+    {"viewtoleft", viewtoleft},
+    {"viewtoright", viewtoright},
+    {"tagtoleft", tagtoleft},
+    {"tagtoright", tagtoright},
+    {"tagandviewtoleft", tagandviewtoleft},
+    {"tagandviewtoright", tagandviewtoright},
+#endif // FOCUSADJACENTTAG_PATCH
+#if SWAPFOCUS_PATCH && PERTAG_PATCH
+    {"swapfocus", swapfocus},
+#endif // SWAPFOCUS_PATCH
+#if SWITCHCOL_PATCH
+    {"switchcol", switchcol},
+#endif // SWITCHCOL_PATCH
+#if ROTATESTACK_PATCH
+    {"rotatestack", rotatestack},
+#endif // ROTATESTACK_PATCH
+#if INPLACEROTATE_PATCH
+    {"inplacerotate", inplacerotate},
+#endif // INPLACEROTATE_PATCH
+#if PUSH_PATCH || PUSH_NO_MASTER_PATCH
+    {"pushdown", pushdown},
+    {"pushup", pushup},
+#endif // PUSH_PATCH / PUSH_NO_MASTER_PATCH
+#if FLEXTILE_DELUXE_LAYOUT
+    {"incnstack", incnstack},
+    {"rotatelayoutaxis", rotatelayoutaxis},
+    {"setlayoutaxisex", setlayoutaxisex},
+    {"mirrorlayout", mirrorlayout},
+#endif // FLEXTILE_DELUXE_LAYOUT
+#if CFACTS_PATCH
+    {"setcfact", setcfact},
+#endif // CFACTS_PATCH
+#if MOVEPLACE_PATCH
+    {"moveplace", moveplace},
+#endif // MOVEPLACE_PATCH
+#if EXRESIZE_PATCH
+    {"explace", explace},
+    {"togglehorizontalexpand", togglehorizontalexpand},
+    {"toggleverticalexpand", toggleverticalexpand},
+    {"togglemaximize", togglemaximize},
+#endif // EXRESIZE_PATCH
+#if KEYMODES_PATCH
+    {"setkeymode", setkeymode},
+#endif // KEYMODES_PATCH
+#if TRANSFER_PATCH
+    {"transfer", transfer},
+#endif // TRANSFER_PATCH
+#if TRANSFER_ALL_PATCH
+    {"transferall", transferall},
+#endif // TRANSFER_ALL_PATCH
+    {"tagmon", tagmon},
+    {"zoom", zoom},
+#if VANITYGAPS_PATCH
+    {"incrgaps", incrgaps},
+    {"incrigaps", incrigaps},
+    {"incrogaps", incrogaps},
+    {"incrihgaps", incrihgaps},
+    {"incrivgaps", incrivgaps},
+    {"incrohgaps", incrohgaps},
+    {"incrovgaps", incrovgaps},
+    {"togglegaps", togglegaps},
+    {"defaultgaps", defaultgaps},
+    {"setgaps", setgapsex},
+#endif // VANITYGAPS_PATCH
+    {"view", view},
+    {"viewall", viewallex},
+    {"viewex", viewex},
+    {"toggleview", toggleview},
+#if SHIFTBOTH_PATCH
+    {"shiftboth", shiftboth},
+#endif // SHIFTBOTH_PATCH
+#if SHIFTTAG_PATCH
+    {"shifttag", shifttag},
+#endif // SHIFTTAG_PATCH
+#if SHIFTTAGCLIENTS_PATCH
+    {"shifttagclients", shifttagclients},
+#endif // SHIFTTAGCLIENTS_PATCH
+#if SHIFTVIEW_PATCH
+    {"shiftview", shiftview},
+#endif // SHIFTVIEW_PATCH
+#if SHIFTVIEW_CLIENTS_PATCH
+    {"shiftviewclients", shiftviewclients},
+#endif // SHIFTVIEW_CLIENTS_PATCH
+#if SHIFTSWAPTAGS_PATCH && SWAPTAGS_PATCH
+    {"shiftswaptags", shiftswaptags},
+#endif // SHIFTSWAPTAGS_PATCH
+#if SELFRESTART_PATCH
+    {"self_restart", self_restart},
+#endif // SELFRESTART_PATCH
+#if BAR_TAGGRID_PATCH
+    {"switchtag", switchtag},
+#endif // BAR_TAGGRID_PATCH
+#if STICKY_PATCH
+    {"togglesticky", togglesticky},
+#endif // STICKY_PATCH
+#if SETBORDERPX_PATCH
+    {"setborderpx", setborderpx},
+#endif // SETBORDERPX_PATCH
+#if CYCLELAYOUTS_PATCH
+    {"cyclelayout", cyclelayout},
+#endif // CYCLELAYOUTS_PATCH
+#if MPDCONTROL_PATCH
+    {"mpdchange", mpdchange},
+    {"mpdcontrol", mpdcontrol},
+#endif // MPDCONTROL_PATCH
+    {"toggleviewex", toggleviewex},
+    {"tag", tag},
+    {"tagall", tagallex},
+    {"tagex", tagex},
+    {"toggletag", toggletag},
+    {"toggletagex", toggletagex},
+#if TAGALLMON_PATCH
+    {"tagallmon", tagallmon},
+#endif // TAGALLMON_PATCH
+#if TAGSWAPMON_PATCH
+    {"tagswapmon", tagswapmon},
+#endif // TAGSWAPMON_PATCH
+#if BAR_ALTERNATIVE_TAGS_PATCH
+    {"togglealttag", togglealttag},
+#endif // BAR_ALTERNATIVE_TAGS_PATCH
+#if TOGGLEFULLSCREEN_PATCH
+    {"togglefullscreen", togglefullscreen},
+#endif // TOGGLEFULLSCREEN_PATCH
+#if !FAKEFULLSCREEN_PATCH && FAKEFULLSCREEN_CLIENT_PATCH
+    {"togglefakefullscreen", togglefakefullscreen},
+#endif // FAKEFULLSCREEN_CLIENT_PATCH
+#if FULLSCREEN_PATCH
+    {"fullscreen", fullscreen},
+#endif // FULLSCREEN_PATCH
+#if MAXIMIZE_PATCH
+    {"togglehorizontalmax", togglehorizontalmax},
+    {"toggleverticalmax", toggleverticalmax},
+    {"togglemax", togglemax},
+#endif // MAXIMIZE_PATCH
+#if SCRATCHPADS_PATCH && !RENAMED_SCRATCHPADS_PATCH
+    {"togglescratch", togglescratch},
+#endif // SCRATCHPADS_PATCH
+#if UNFLOATVISIBLE_PATCH
+    {"unfloatvisible", unfloatvisible},
+#endif // UNFLOATVISIBLE_PATCH
+    {"killclient", killclient},
+#if WINVIEW_PATCH
+    {"winview", winview},
+#endif // WINVIEW_PATCH
+#if XRDB_PATCH && !BAR_VTCOLORS_PATCH
+    {"xrdb", xrdb},
+#endif // XRDB_PATCH
+#if TAGOTHERMONITOR_PATCH
+    {"tagnextmonex", tagnextmonex},
+    {"tagprevmonex", tagprevmonex},
+#endif // TAGOTHERMONITOR_PATCH
+    {"quit", quit},
+    {"setlayout", setlayout},
+    {"setlayoutex", setlayoutex},
 };
 #elif FSIGNAL_PATCH
 /* signal definitions */
 /* signum must be greater than 0 */
 /* trigger signals using `xsetroot -name "fsignal:<signum>"` */
 static Signal signals[] = {
-	/* signum       function        argument  */
-	{ 1,            setlayout,      {.v = 0} },
+    /* signum       function        argument  */
+    {1, setlayout, {.v = 0}},
 };
 #endif // DWMC_PATCH
 
 #if IPC_PATCH
 static const char *ipcsockpath = "/tmp/dwm.sock";
 static IPCCommand ipccommands[] = {
-	IPCCOMMAND( focusmon, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( focusstack, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( incnmaster, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( killclient, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( quit, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( setlayoutsafe, 1, {ARG_TYPE_PTR} ),
-	IPCCOMMAND( setmfact, 1, {ARG_TYPE_FLOAT} ),
-	IPCCOMMAND( setstatus, 1, {ARG_TYPE_STR} ),
-	IPCCOMMAND( tag, 1, {ARG_TYPE_UINT} ),
-	IPCCOMMAND( tagmon, 1, {ARG_TYPE_UINT} ),
-	IPCCOMMAND( togglebar, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( togglefloating, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( toggletag, 1, {ARG_TYPE_UINT} ),
-	IPCCOMMAND( toggleview, 1, {ARG_TYPE_UINT} ),
-	IPCCOMMAND( view, 1, {ARG_TYPE_UINT} ),
-	IPCCOMMAND( zoom, 1, {ARG_TYPE_NONE} ),
-	#if BAR_ALTERNATIVE_TAGS_PATCH
-	IPCCOMMAND( togglealttag, 1, {ARG_TYPE_NONE} ),
-	#endif // BAR_ALTERNATIVE_TAGS_PATCH
-	#if BAR_TAGGRID_PATCH
-	IPCCOMMAND( switchtag, 1, {ARG_TYPE_UINT} ),
-	#endif // BAR_TAGGRID_PATCH
-	#if CFACTS_PATCH
-	IPCCOMMAND( setcfact, 1, {ARG_TYPE_FLOAT} ),
-	#endif // CFACTS_PATCH
-	#if CYCLELAYOUTS_PATCH
-	IPCCOMMAND( cyclelayout, 1, {ARG_TYPE_SINT} ),
-	#endif // CYCLELAYOUTS_PATCH
-	#if EXRESIZE_PATCH
-	IPCCOMMAND( explace, 1, {ARG_TYPE_UINT} ),
-	IPCCOMMAND( togglehorizontalexpand, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( toggleverticalexpand, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( togglemaximize, 1, {ARG_TYPE_SINT} ),
-	#endif // EXRESIZE_PATCH
-	#if !FAKEFULLSCREEN_PATCH && FAKEFULLSCREEN_CLIENT_PATCH
-	IPCCOMMAND( togglefakefullscreen, 1, {ARG_TYPE_NONE} ),
-	#endif // FAKEFULLSCREEN_CLIENT_PATCH
-	#if FLOATPOS_PATCH
-	IPCCOMMAND( floatpos, 1, {ARG_TYPE_STR} ),
-	#endif // FLOATPOS_PATCH
-	#if FULLSCREEN_PATCH
-	IPCCOMMAND( fullscreen, 1, {ARG_TYPE_NONE} ),
-	#endif // FULLSCREEN_PATCH
-	#if FLEXTILE_DELUXE_LAYOUT
-	IPCCOMMAND( incnstack, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( rotatelayoutaxis, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( setlayoutaxisex, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( mirrorlayout, 1, {ARG_TYPE_NONE} ),
-	#endif // FLEXTILE_DELUXE_LAYOUT
-	#if FOCUSURGENT_PATCH
-	IPCCOMMAND( focusurgent, 1, {ARG_TYPE_NONE} ),
-	#endif // FOCUSURGENT_PATCH
-	#if FOCUSADJACENTTAG_PATCH
-	IPCCOMMAND( viewtoleft, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( viewtoright, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( tagtoleft, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( tagtoright, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( tagandviewtoleft, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( tagandviewtoright, 1, {ARG_TYPE_NONE} ),
-	#endif // FOCUSADJACENTTAG_PATCH
-	#if INPLACEROTATE_PATCH
-	IPCCOMMAND( inplacerotate, 1, {ARG_TYPE_SINT} ),
-	#endif // INPLACEROTATE_PATCH
-	#if KEYMODES_PATCH
-	IPCCOMMAND( setkeymode, 1, {ARG_TYPE_UINT} ),
-	#endif // KEYMODES_PATCH
-	#if MAXIMIZE_PATCH
-	IPCCOMMAND( togglehorizontalmax, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( toggleverticalmax, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( togglemax, 1, {ARG_TYPE_NONE} ),
-	#endif // MAXIMIZE_PATCH
-	#if MPDCONTROL_PATCH
-	IPCCOMMAND( mpdchange, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( mpdcontrol, 1, {ARG_TYPE_NONE} ),
-	#endif // MPDCONTROL_PATCH
-	#if MOVEPLACE_PATCH
-	IPCCOMMAND( moveplace, 1, {ARG_TYPE_UINT} ),
-	#endif // MOVEPLACE_PATCH
-	#if MOVERESIZE_PATCH
-	IPCCOMMAND( moveresize, 1, {ARG_TYPE_STR} ),
-	#endif // MOVERESIZE_PATCH
-	#if RIODRAW_PATCH
-	IPCCOMMAND( rioresize, 1, {ARG_TYPE_NONE} ),
-	#endif // RIODRAW_PATCH
-	#if PUSH_PATCH || PUSH_NO_MASTER_PATCH
-	IPCCOMMAND( pushdown, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( pushup, 1, {ARG_TYPE_NONE} ),
-	#endif // PUSH_PATCH / PUSH_NO_MASTER_PATCH
-	#if ROTATESTACK_PATCH
-	IPCCOMMAND( rotatestack, 1, {ARG_TYPE_SINT} ),
-	#endif // ROTATESTACK_PATCH
-	#if SCRATCHPADS_PATCH && !RENAMED_SCRATCHPADS_PATCH
-	IPCCOMMAND( togglescratch, 1, {ARG_TYPE_UINT} ),
-	#endif // SCRATCHPADS_PATCH
-	#if SELFRESTART_PATCH
-	IPCCOMMAND( self_restart, 1, {ARG_TYPE_NONE} ),
-	#endif // SELFRESTART_PATCH
-	#if SETBORDERPX_PATCH
-	IPCCOMMAND( setborderpx, 1, {ARG_TYPE_SINT} ),
-	#endif // SETBORDERPX_PATCH
-	#if SHIFTBOTH_PATCH
-	IPCCOMMAND( shiftboth, 1, {ARG_TYPE_SINT} ),
-	#endif // SHIFTBOTH_PATCH
-	#if SHIFTTAG_PATCH
-	IPCCOMMAND( shifttag, 1, {ARG_TYPE_SINT} ),
-	#endif // SHIFTTAG_PATCH
-	#if SHIFTTAGCLIENTS_PATCH
-	IPCCOMMAND( shifttagclients, 1, {ARG_TYPE_SINT} ),
-	#endif // SHIFTVIEWCLIENTS_PATCH
-	#if SHIFTVIEW_PATCH
-	IPCCOMMAND( shiftview, 1, {ARG_TYPE_SINT} ),
-	#endif // SHIFTVIEW_PATCH
-	#if SHIFTVIEW_CLIENTS_PATCH
-	IPCCOMMAND( shiftviewclients, 1, {ARG_TYPE_SINT} ),
-	#endif // SHIFTVIEW_CLIENTS_PATCH
-	#if SHIFTSWAPTAGS_PATCH && SWAPTAGS_PATCH
-	IPCCOMMAND( shiftswaptags, 1, {ARG_TYPE_SINT} ),
-	#endif // SHIFTSWAPTAGS_PATCH
-	#if STACKER_PATCH
-	IPCCOMMAND( pushstack, 1, {ARG_TYPE_SINT} ),
-	#endif // STACKER_PATCH
-	#if STICKY_PATCH
-	IPCCOMMAND( togglesticky, 1, {ARG_TYPE_NONE} ),
-	#endif // STICKY_PATCH
-	#if SWAPFOCUS_PATCH && PERTAG_PATCH
-	IPCCOMMAND( swapfocus, 1, {ARG_TYPE_SINT} ),
-	#endif // SWAPFOCUS_PATCH
-	#if SWITCHCOL_PATCH
-	IPCCOMMAND( switchcol, 1, {ARG_TYPE_NONE} ),
-	#endif // SWITCHCOL_PATCH
-	#if TAGALLMON_PATCH
-	IPCCOMMAND( tagallmon, 1, {ARG_TYPE_SINT} ),
-	#endif // TAGALLMON_PATCH
-	#if TAGOTHERMONITOR_PATCH
-	IPCCOMMAND( tagnextmonex, 1, {ARG_TYPE_UINT} ),
-	IPCCOMMAND( tagprevmonex, 1, {ARG_TYPE_UINT} ),
-	#endif // TAGOTHERMONITOR_PATCH
-	#if TAGSWAPMON_PATCH
-	IPCCOMMAND( tagswapmon, 1, {ARG_TYPE_SINT} ),
-	#endif // TAGSWAPMON_PATCH
-	#if TOGGLEFULLSCREEN_PATCH
-	IPCCOMMAND( togglefullscreen, 1, {ARG_TYPE_NONE} ),
-	#endif // TOGGLEFULLSCREEN_PATCH
-	#if TRANSFER_PATCH
-	IPCCOMMAND( transfer, 1, {ARG_TYPE_NONE} ),
-	#endif // TRANSFER_PATCH
-	#if TRANSFER_ALL_PATCH
-	IPCCOMMAND( transferall, 1, {ARG_TYPE_NONE} ),
-	#endif // TRANSFER_ALL_PATCH
-	#if UNFLOATVISIBLE_PATCH
-	IPCCOMMAND( unfloatvisible, 1, {ARG_TYPE_NONE} ),
-	#endif // UNFLOATVISIBLE_PATCH
-	#if VANITYGAPS_PATCH
-	IPCCOMMAND( incrgaps, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( incrigaps, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( incrogaps, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( incrihgaps, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( incrivgaps, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( incrohgaps, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( incrovgaps, 1, {ARG_TYPE_SINT} ),
-	IPCCOMMAND( togglegaps, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( defaultgaps, 1, {ARG_TYPE_NONE} ),
-	IPCCOMMAND( setgapsex, 1, {ARG_TYPE_SINT} ),
-	#endif // VANITYGAPS_PATCH
-	#if WINVIEW_PATCH
-	IPCCOMMAND( winview, 1, {ARG_TYPE_NONE} ),
-	#endif // WINVIEW_PATCH
-	#if XRDB_PATCH && !BAR_VTCOLORS_PATCH
-	IPCCOMMAND( xrdb, 1, {ARG_TYPE_NONE} ),
-	#endif // XRDB_PATCH
+    IPCCOMMAND(focusmon, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(focusstack, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(incnmaster, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(killclient, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(quit, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(setlayoutsafe, 1, {ARG_TYPE_PTR}),
+    IPCCOMMAND(setmfact, 1, {ARG_TYPE_FLOAT}),
+    IPCCOMMAND(setstatus, 1, {ARG_TYPE_STR}),
+    IPCCOMMAND(tag, 1, {ARG_TYPE_UINT}),
+    IPCCOMMAND(tagmon, 1, {ARG_TYPE_UINT}),
+    IPCCOMMAND(togglebar, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(togglefloating, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(toggletag, 1, {ARG_TYPE_UINT}),
+    IPCCOMMAND(toggleview, 1, {ARG_TYPE_UINT}),
+    IPCCOMMAND(view, 1, {ARG_TYPE_UINT}),
+    IPCCOMMAND(zoom, 1, {ARG_TYPE_NONE}),
+#if BAR_ALTERNATIVE_TAGS_PATCH
+    IPCCOMMAND(togglealttag, 1, {ARG_TYPE_NONE}),
+#endif // BAR_ALTERNATIVE_TAGS_PATCH
+#if BAR_TAGGRID_PATCH
+    IPCCOMMAND(switchtag, 1, {ARG_TYPE_UINT}),
+#endif // BAR_TAGGRID_PATCH
+#if CFACTS_PATCH
+    IPCCOMMAND(setcfact, 1, {ARG_TYPE_FLOAT}),
+#endif // CFACTS_PATCH
+#if CYCLELAYOUTS_PATCH
+    IPCCOMMAND(cyclelayout, 1, {ARG_TYPE_SINT}),
+#endif // CYCLELAYOUTS_PATCH
+#if EXRESIZE_PATCH
+    IPCCOMMAND(explace, 1, {ARG_TYPE_UINT}),
+    IPCCOMMAND(togglehorizontalexpand, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(toggleverticalexpand, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(togglemaximize, 1, {ARG_TYPE_SINT}),
+#endif // EXRESIZE_PATCH
+#if !FAKEFULLSCREEN_PATCH && FAKEFULLSCREEN_CLIENT_PATCH
+    IPCCOMMAND(togglefakefullscreen, 1, {ARG_TYPE_NONE}),
+#endif // FAKEFULLSCREEN_CLIENT_PATCH
+#if FLOATPOS_PATCH
+    IPCCOMMAND(floatpos, 1, {ARG_TYPE_STR}),
+#endif // FLOATPOS_PATCH
+#if FULLSCREEN_PATCH
+    IPCCOMMAND(fullscreen, 1, {ARG_TYPE_NONE}),
+#endif // FULLSCREEN_PATCH
+#if FLEXTILE_DELUXE_LAYOUT
+    IPCCOMMAND(incnstack, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(rotatelayoutaxis, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(setlayoutaxisex, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(mirrorlayout, 1, {ARG_TYPE_NONE}),
+#endif // FLEXTILE_DELUXE_LAYOUT
+#if FOCUSURGENT_PATCH
+    IPCCOMMAND(focusurgent, 1, {ARG_TYPE_NONE}),
+#endif // FOCUSURGENT_PATCH
+#if FOCUSADJACENTTAG_PATCH
+    IPCCOMMAND(viewtoleft, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(viewtoright, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(tagtoleft, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(tagtoright, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(tagandviewtoleft, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(tagandviewtoright, 1, {ARG_TYPE_NONE}),
+#endif // FOCUSADJACENTTAG_PATCH
+#if INPLACEROTATE_PATCH
+    IPCCOMMAND(inplacerotate, 1, {ARG_TYPE_SINT}),
+#endif // INPLACEROTATE_PATCH
+#if KEYMODES_PATCH
+    IPCCOMMAND(setkeymode, 1, {ARG_TYPE_UINT}),
+#endif // KEYMODES_PATCH
+#if MAXIMIZE_PATCH
+    IPCCOMMAND(togglehorizontalmax, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(toggleverticalmax, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(togglemax, 1, {ARG_TYPE_NONE}),
+#endif // MAXIMIZE_PATCH
+#if MPDCONTROL_PATCH
+    IPCCOMMAND(mpdchange, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(mpdcontrol, 1, {ARG_TYPE_NONE}),
+#endif // MPDCONTROL_PATCH
+#if MOVEPLACE_PATCH
+    IPCCOMMAND(moveplace, 1, {ARG_TYPE_UINT}),
+#endif // MOVEPLACE_PATCH
+#if MOVERESIZE_PATCH
+    IPCCOMMAND(moveresize, 1, {ARG_TYPE_STR}),
+#endif // MOVERESIZE_PATCH
+#if RIODRAW_PATCH
+    IPCCOMMAND(rioresize, 1, {ARG_TYPE_NONE}),
+#endif // RIODRAW_PATCH
+#if PUSH_PATCH || PUSH_NO_MASTER_PATCH
+    IPCCOMMAND(pushdown, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(pushup, 1, {ARG_TYPE_NONE}),
+#endif // PUSH_PATCH / PUSH_NO_MASTER_PATCH
+#if ROTATESTACK_PATCH
+    IPCCOMMAND(rotatestack, 1, {ARG_TYPE_SINT}),
+#endif // ROTATESTACK_PATCH
+#if SCRATCHPADS_PATCH && !RENAMED_SCRATCHPADS_PATCH
+    IPCCOMMAND(togglescratch, 1, {ARG_TYPE_UINT}),
+#endif // SCRATCHPADS_PATCH
+#if SELFRESTART_PATCH
+    IPCCOMMAND(self_restart, 1, {ARG_TYPE_NONE}),
+#endif // SELFRESTART_PATCH
+#if SETBORDERPX_PATCH
+    IPCCOMMAND(setborderpx, 1, {ARG_TYPE_SINT}),
+#endif // SETBORDERPX_PATCH
+#if SHIFTBOTH_PATCH
+    IPCCOMMAND(shiftboth, 1, {ARG_TYPE_SINT}),
+#endif // SHIFTBOTH_PATCH
+#if SHIFTTAG_PATCH
+    IPCCOMMAND(shifttag, 1, {ARG_TYPE_SINT}),
+#endif // SHIFTTAG_PATCH
+#if SHIFTTAGCLIENTS_PATCH
+    IPCCOMMAND(shifttagclients, 1, {ARG_TYPE_SINT}),
+#endif // SHIFTVIEWCLIENTS_PATCH
+#if SHIFTVIEW_PATCH
+    IPCCOMMAND(shiftview, 1, {ARG_TYPE_SINT}),
+#endif // SHIFTVIEW_PATCH
+#if SHIFTVIEW_CLIENTS_PATCH
+    IPCCOMMAND(shiftviewclients, 1, {ARG_TYPE_SINT}),
+#endif // SHIFTVIEW_CLIENTS_PATCH
+#if SHIFTSWAPTAGS_PATCH && SWAPTAGS_PATCH
+    IPCCOMMAND(shiftswaptags, 1, {ARG_TYPE_SINT}),
+#endif // SHIFTSWAPTAGS_PATCH
+#if STACKER_PATCH
+    IPCCOMMAND(pushstack, 1, {ARG_TYPE_SINT}),
+#endif // STACKER_PATCH
+#if STICKY_PATCH
+    IPCCOMMAND(togglesticky, 1, {ARG_TYPE_NONE}),
+#endif // STICKY_PATCH
+#if SWAPFOCUS_PATCH && PERTAG_PATCH
+    IPCCOMMAND(swapfocus, 1, {ARG_TYPE_SINT}),
+#endif // SWAPFOCUS_PATCH
+#if SWITCHCOL_PATCH
+    IPCCOMMAND(switchcol, 1, {ARG_TYPE_NONE}),
+#endif // SWITCHCOL_PATCH
+#if TAGALLMON_PATCH
+    IPCCOMMAND(tagallmon, 1, {ARG_TYPE_SINT}),
+#endif // TAGALLMON_PATCH
+#if TAGOTHERMONITOR_PATCH
+    IPCCOMMAND(tagnextmonex, 1, {ARG_TYPE_UINT}),
+    IPCCOMMAND(tagprevmonex, 1, {ARG_TYPE_UINT}),
+#endif // TAGOTHERMONITOR_PATCH
+#if TAGSWAPMON_PATCH
+    IPCCOMMAND(tagswapmon, 1, {ARG_TYPE_SINT}),
+#endif // TAGSWAPMON_PATCH
+#if TOGGLEFULLSCREEN_PATCH
+    IPCCOMMAND(togglefullscreen, 1, {ARG_TYPE_NONE}),
+#endif // TOGGLEFULLSCREEN_PATCH
+#if TRANSFER_PATCH
+    IPCCOMMAND(transfer, 1, {ARG_TYPE_NONE}),
+#endif // TRANSFER_PATCH
+#if TRANSFER_ALL_PATCH
+    IPCCOMMAND(transferall, 1, {ARG_TYPE_NONE}),
+#endif // TRANSFER_ALL_PATCH
+#if UNFLOATVISIBLE_PATCH
+    IPCCOMMAND(unfloatvisible, 1, {ARG_TYPE_NONE}),
+#endif // UNFLOATVISIBLE_PATCH
+#if VANITYGAPS_PATCH
+    IPCCOMMAND(incrgaps, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(incrigaps, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(incrogaps, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(incrihgaps, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(incrivgaps, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(incrohgaps, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(incrovgaps, 1, {ARG_TYPE_SINT}),
+    IPCCOMMAND(togglegaps, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(defaultgaps, 1, {ARG_TYPE_NONE}),
+    IPCCOMMAND(setgapsex, 1, {ARG_TYPE_SINT}),
+#endif // VANITYGAPS_PATCH
+#if WINVIEW_PATCH
+    IPCCOMMAND(winview, 1, {ARG_TYPE_NONE}),
+#endif // WINVIEW_PATCH
+#if XRDB_PATCH && !BAR_VTCOLORS_PATCH
+    IPCCOMMAND(xrdb, 1, {ARG_TYPE_NONE}),
+#endif // XRDB_PATCH
 };
 #endif // IPC_PATCH
