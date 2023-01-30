@@ -50,7 +50,7 @@ static const int showtab                 = showtab_auto;        /* Default tab b
 static const int toptab                  = False;               /* False means bottom tab bar */
 #endif // TAB_PATCH
 #if BAR_HEIGHT_PATCH
-static const int bar_height              = 0;   /* 0 means derive from font, >= 1 explicit height */
+static const int bar_height              = 24;   /* 0 means derive from font, >= 1 explicit height */
 #endif // BAR_HEIGHT_PATCH
 #if BAR_PADDING_PATCH
 static const int vertpad                 = 10;  /* vertical padding of bar */
@@ -128,10 +128,10 @@ static void (*bartabmonfns[])(Monitor *) = { NULL /* , customlayoutfn */ };
 #endif // MONOCLE_LAYOUT
 #endif // BAR_TABGROUPS_PATCH
 #if BAR_PANGO_PATCH
-static const char font[]                 = "Source Code Pro 12";
+static const char font[]                 = "Source Code Pro 10";
 #else
-static const char *fonts[]               = { "Source Code Pro:size=12:antialias=true:autohint=true",
-	   		 	  						   	 "JoyPixels:size=12:antialias=true:autohint=true" };
+static const char *fonts[]               = { "Source Code Pro:size=10:antialias=true:autohint=true",
+	   		 	  						   	 "JoyPixels:size=10:antialias=true:autohint=true" };
 #endif // BAR_PANGO_PATCH
 static const char dmenufont[]            = "Source Code Pro:size=12";
 
@@ -465,6 +465,7 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
 	RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
+    RULE(.class="Gnome-terminal", .isfloating=1)
 	RULE(.class = "Gimp", .tags = 1 << 4)
 	RULE(.class = "Firefox", .tags = 1 << 7)
 	RULE(.class = "discord", .tags = 1 << 1)
@@ -858,11 +859,13 @@ static const char *termcmd[]  = { "alacritty", NULL };
 #define bin "~/.bin/"
 static const StatusCmd statuscmds[] = {
 	{ bin"calendar", 1 }, // clock
-	{ "notify-send 'hot-reload'" , 2 }, // volume
+	{ bin"rofi-volume" , 2 }, // volume
 	{ bin"rofi-battery", 3 }, // battery
 	{ bin"rofi-notification", 4 }, // notification
 	{ bin"rofi-music", 5 }, // music
 	{ bin"toggle-caffeine.sh", 6 }, // caffeine
+	{ bin"rofi-bluetooth", 7 }, // bluetooth
+	{ bin"rofi-pulse", 8 }, // pulseaudio
 };
 /* test the above with: xsetroot -name "$(printf '\x01Volume |\x02 CPU |\x03 Battery')" */
 static const char *statuscmd[] = { "/bin/bash", "-c", NULL, NULL };
