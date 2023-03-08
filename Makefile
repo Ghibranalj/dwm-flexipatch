@@ -19,6 +19,7 @@ options:
 	@echo "CFLAGS   = ${CFLAGS}"
 	@echo "LDFLAGS  = ${LDFLAGS}"
 	@echo "CC       = ${CC}"
+	@echo "HOSTFLAG = ${HOSTFLAG}"
 
 .c.o:
 	${CC} -c ${CFLAGS} $<

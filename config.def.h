@@ -50,7 +50,12 @@ static const int showtab                 = showtab_auto;        /* Default tab b
 static const int toptab                  = False;               /* False means bottom tab bar */
 #endif // TAB_PATCH
 #if BAR_HEIGHT_PATCH
+#if CreeprDell
+static const int bar_height              = 25;   /* 0 means derive from font, >= 1 explicit height */
+#else    
 static const int bar_height              = 24;   /* 0 means derive from font, >= 1 explicit height */
+#endif // CreeprDel
+
 #endif // BAR_HEIGHT_PATCH
 #if BAR_PADDING_PATCH
 static const int vertpad                 = 10;  /* vertical padding of bar */
@@ -128,7 +133,11 @@ static void (*bartabmonfns[])(Monitor *) = { NULL /* , customlayoutfn */ };
 #endif // MONOCLE_LAYOUT
 #endif // BAR_TABGROUPS_PATCH
 #if BAR_PANGO_PATCH
+#if CreeprDell
 static const char font[]                 = "Source Code Pro 10";
+#else  // creeprdell
+static const char font[]                 = "Source Code Pro 9";
+#endif // creerdell
 #else
 static const char *fonts[]               = { "Source Code Pro:size=10:antialias=true:autohint=true",
 	   		 	  						   	 "JoyPixels:size=10:antialias=true:autohint=true" };
@@ -1192,15 +1201,36 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_KP_2,       exresize,               {.v = (int []){   0, -25 }}},  /* XK_KP_Down,  */
 	{ MODKEY|ShiftMask,             XK_KP_6,       exresize,               {.v = (int []){  25,   0 }}},  /* XK_KP_Right, */
 	{ MODKEY|ShiftMask,             XK_KP_4,       exresize,               {.v = (int []){ -25,   0 }}},  /* XK_KP_Left,  */
-	{ MODKEY|ShiftMask,             XK_KP_5,       exresize,               {.v = (int []){  25,  25 }}},  /* XK_KP_Begin, */
-	{ MODKEY|ShiftMask|ControlMask, XK_KP_5,       exresize,               {.v = (int []){ -25, -25 }}},  /* XK_KP_Begin, */
+	{MODKEY | ShiftMask,
+     XK_KP_5,
+     exresize,
+     {.v = (int[]){25, 25}}}, /* XK_KP_Begin, */
+    {MODKEY | ShiftMask | ControlMask,
+     XK_KP_5,
+     exresize,
+     {.v = (int[]){-25, -25}}}, /* XK_KP_Begin, */
 
-	{ MODKEY|ControlMask,           XK_KP_6,       togglehorizontalexpand, {.i = +1} },  /* XK_KP_Right, */
-	{ MODKEY|ControlMask,           XK_KP_3,       togglehorizontalexpand, {.i =  0} },  /* XK_KP_Next,  */
-	{ MODKEY|ControlMask,           XK_KP_4,       togglehorizontalexpand, {.i = -1} },  /* XK_KP_Left,  */
-	{ MODKEY|ControlMask,           XK_KP_8,       toggleverticalexpand,   {.i = +1} },  /* XK_KP_Up,    */
-	{ MODKEY|ControlMask,           XK_KP_1,       toggleverticalexpand,   {.i =  0} },  /* XK_KP_End,   */
-	{MODKEY | ControlMask,
+    {MODKEY | ControlMask,
+     XK_KP_6,
+     togglehorizontalexpand,
+     {.i = +1}}, /* XK_KP_Right, */
+    {MODKEY | ControlMask,
+     XK_KP_3,
+     togglehorizontalexpand,
+     {.i = 0}}, /* XK_KP_Next,  */
+    {MODKEY | ControlMask,
+     XK_KP_4,
+     togglehorizontalexpand,
+     {.i = -1}}, /* XK_KP_Left,  */
+    {MODKEY | ControlMask,
+     XK_KP_8,
+     toggleverticalexpand,
+     {.i = +1}}, /* XK_KP_Up,    */
+    {MODKEY | ControlMask,
+     XK_KP_1,
+     toggleverticalexpand,
+     {.i = 0}}, /* XK_KP_End,   */
+    {MODKEY | ControlMask,
      XK_KP_2,
      toggleverticalexpand,
      {.i = -1}}, /* XK_KP_Down,  */
