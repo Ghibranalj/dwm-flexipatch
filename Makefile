@@ -43,6 +43,7 @@ endif
 clean:
 	rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
 	rm -f dwm-msg
+	rm -f compile_commands.json
 
 dist: clean
 	mkdir -p dwm-${VERSION}
@@ -71,4 +72,7 @@ uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
 		${DESTDIR}${MANPREFIX}/man1/dwm.1
 
-.PHONY: all options clean dist install uninstall
+lsp:
+	bear -- make clean all
+
+.PHONY: all options clean dist install uninstall lsp

@@ -3,3 +3,5 @@ dwm
 dwm-msg
 config.h
 patches.h
+/.cache/
+/compile_commands.json
