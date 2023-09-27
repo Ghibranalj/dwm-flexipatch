@@ -875,6 +875,7 @@ static const StatusCmd statuscmds[] = {
 	{ bin"toggle-caffeine.sh", 6 }, // caffeine
 	{ bin"rofi-bluetooth", 7 }, // bluetooth
 	{ bin"rofi-pulse", 8 }, // pulseaudio
+    { bin"shutdown.sh", 9 }, // power menu
 };
 /* test the above with: xsetroot -name "$(printf '\x01Volume |\x02 CPU |\x03 Battery')" */
 static const char *statuscmd[] = { "/bin/bash", "-c", NULL, NULL };
